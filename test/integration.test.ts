@@ -130,6 +130,19 @@ describe('redirect hook process', () => {
   });
 });
 
+describe('published bundles (what the plugin runs)', () => {
+  test('dist/server.js answers a search and dist/redirect.js redirects, with no node_modules needed', async () => {
+    const proc = Bun.spawn(['bun', join(root, 'dist/server.js')], { stdin: 'pipe', stdout: 'pipe', env: env(), cwd: tmpdir() });
+    proc.stdin.write(`${JSON.stringify(toolCall(1, 'search', { query: 'bundle' }))}\n`);
+    proc.stdin.flush();
+    const { value } = await proc.stdout.getReader().read();
+    proc.kill();
+    expect(JSON.parse(new TextDecoder().decode(value)).result.content[0].text).toStartWith('1. [Hit for bundle]');
+    const hookProc = Bun.spawn(['bun', join(root, 'dist/redirect.js')], { stdin: new Blob([JSON.stringify({ tool_name: 'WebSearch' })]), stdout: 'pipe', env: env() });
+    expect(JSON.parse(await new Response(hookProc.stdout).text()).hookSpecificOutput.permissionDecision).toBe('deny');
+  });
+});
+
 describe.if(Boolean(process.env.DEEPSEEK_LIVE_KEY))('live DeepSeek API', () => {
   test('search returns ranked results with summaries', async () => {
     const proc = Bun.spawn(['bun', join(root, 'src/server.ts')], {

@@ -5,6 +5,7 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
+    "build": "bun build src/server.ts src/redirect.ts --target=bun --outdir=dist --minify-syntax --minify-whitespace",
     "test": "bun test",
     "typecheck": "tsc --noEmit"
   },

@@ -2,7 +2,7 @@
  * PreToolUse hook on WebSearch|WebFetch: sends Claude to DeepSeek first. The built-in tool is allowed when there is no
  * DeepSeek key, when DeepSeek search failed in the last 15 minutes, or (for WebFetch) when DeepSeek could not fetch that URL.
  */
-import { apiKey, FALLBACK_WINDOW_MS, readFailures } from './deepseek';
+import { apiKey, FALLBACK_WINDOW_MS, readFailures } from './failures';
 
 export const SEARCH_TOOL = 'mcp__plugin_deepseek-search_deepseek__search';
 export const FETCH_TOOL = 'mcp__plugin_deepseek-search_deepseek__fetch';

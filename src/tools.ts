@@ -1,6 +1,7 @@
 /** The two MCP tools and how their output is laid out for the model. */
 import { Effect } from 'effect';
-import { clearSearchFailure, DeepSeekError, fetchPage, isOutage, noteFetchFailure, noteSearchFailure, search, type Result } from './deepseek';
+import { DeepSeekError, fetchPage, isOutage, search, type Result } from './deepseek';
+import { clearSearchFailure, noteFetchFailure, noteSearchFailure } from './failures';
 
 export interface Tool {
   name: string;

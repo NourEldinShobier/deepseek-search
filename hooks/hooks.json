@@ -1,7 +1,7 @@
 {
   "hooks": {
     "PreToolUse": [
-      { "matcher": "WebSearch|WebFetch", "hooks": [{ "type": "command", "command": "bun", "args": ["${CLAUDE_PLUGIN_ROOT}/src/redirect.ts"], "timeout": 5 }] }
+      { "matcher": "WebSearch|WebFetch", "hooks": [{ "type": "command", "command": "bun", "args": ["${CLAUDE_PLUGIN_ROOT}/dist/redirect.js"], "timeout": 5 }] }
     ]
   }
 }

@@ -1,5 +1,5 @@
 {
   "mcpServers": {
-    "deepseek": { "command": "bun", "args": ["${CLAUDE_PLUGIN_ROOT}/src/server.ts"] }
+    "deepseek": { "command": "bun", "args": ["${CLAUDE_PLUGIN_ROOT}/dist/server.js"] }
   }
 }

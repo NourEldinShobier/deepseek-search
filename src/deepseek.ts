@@ -1,13 +1,8 @@
-/** DeepSeek Search and Fetch APIs (https://api-docs.deepseek.com/guides/search/), plus the failure marker the hook reads. */
+/** DeepSeek Search and Fetch APIs (https://api-docs.deepseek.com/guides/search/). */
 import { Data, Effect, Schedule, Schema } from 'effect';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { apiKey } from './failures';
 
 export const BASE = () => (process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com').replace(/\/+$/, '');
-export const apiKey = () => (process.env.DEEPSEEK_API_KEY ?? '').trim();
-export const cacheDir = () => process.env.DEEPSEEK_SEARCH_CACHE || join(homedir(), '.cache', 'deepseek-search');
-const markerPath = () => join(cacheDir(), 'failures.json');
 
 /** `status` is the HTTP status; 0 means no response (network error or timeout). */
 export class DeepSeekError extends Data.TaggedError('DeepSeekError')<{ readonly status: number; readonly message: string; readonly retry?: false }> {}
@@ -70,49 +65,5 @@ export const search = (args: { query: string; count?: number; need_content?: boo
 
 export const fetchPage = (url: string) => post('/v1/tools/fetch', { url }, FetchResponse as Schema.Codec<typeof FetchResponse.Type, unknown>);
 
-// ---------------------------------------------------------------- failure marker for the hook
-
-interface Failures {
-  /** Last time DeepSeek as a whole failed (key, balance, outage), ms since epoch. */
-  search?: number;
-  /** URLs DeepSeek could not fetch, with the time it failed. */
-  urls?: Record<string, number>;
-}
-
-export const FALLBACK_WINDOW_MS = 15 * 60_000;
-
-export function readFailures(): Failures {
-  try {
-    return existsSync(markerPath()) ? (JSON.parse(readFileSync(markerPath(), 'utf8')) as Failures) : {};
-  } catch {
-    return {};
-  }
-}
-
-function writeFailures(f: Failures): void {
-  try {
-    mkdirSync(cacheDir(), { recursive: true });
-    writeFileSync(markerPath(), JSON.stringify(f));
-  } catch {
-    // The marker only unlocks the fallback sooner; losing it is harmless.
-  }
-}
-
 /** Failures that mean DeepSeek is unusable right now (not a bad request). */
 export const isOutage = (e: DeepSeekError) => e.status === 0 || e.status === 401 || e.status === 402 || e.status === 429 || e.status >= 500;
-
-export function noteSearchFailure(now = Date.now()): void {
-  writeFailures({ ...readFailures(), search: now });
-}
-
-export function noteFetchFailure(url: string, now = Date.now()): void {
-  const f = readFailures();
-  const urls = Object.fromEntries(Object.entries(f.urls ?? {}).filter(([, t]) => now - t < FALLBACK_WINDOW_MS));
-  urls[url] = now;
-  writeFailures({ ...f, urls });
-}
-
-export function clearSearchFailure(): void {
-  const f = readFailures();
-  if (f.search) writeFailures({ ...f, search: undefined });
-}

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, mock, test } from 'bun:test';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { readFailures } from '../src/deepseek';
+import { readFailures } from '../src/failures';
 import { decide, FETCH_TOOL, SEARCH_TOOL } from '../src/redirect';
 import { handle } from '../src/server';
 import { formatPage, formatResults, tools, unescapeMarkdown } from '../src/tools';
