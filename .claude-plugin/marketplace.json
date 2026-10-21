@@ -1,0 +1,9 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "deepseek-search",
+  "description": "DeepSeek web search and fetch for Claude Code.",
+  "owner": { "name": "Nour Eldin Shobier", "url": "https://github.com/NourEldinShobier" },
+  "plugins": [
+    { "name": "deepseek-search", "description": "Web search and page fetching through DeepSeek, with the built-in tools as fallback.", "source": "./", "category": "productivity" }
+  ]
+}
