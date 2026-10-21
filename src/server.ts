@@ -4,7 +4,7 @@ import { tools } from './tools';
 type Id = string | number | null;
 interface Message { jsonrpc?: string; id?: Id; method?: string; params?: Record<string, unknown> }
 
-const VERSION = '0.1.0';
+const VERSION = '0.1.1';
 const INSTRUCTIONS =
   'Web access goes through this server: use search to find pages and fetch to read one. They replace the built-in WebSearch and WebFetch, ' +
   'which are only for when a call here fails (the error says so).';

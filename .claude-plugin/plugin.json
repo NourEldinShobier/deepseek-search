@@ -1,6 +1,6 @@
 {
   "name": "deepseek-search",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Web search and page fetching through DeepSeek's Search and Fetch APIs, as the default for Claude Code. The built-in WebSearch/WebFetch stay available as a fallback when DeepSeek fails.",
   "author": { "name": "Nour Eldin Shobier", "url": "https://github.com/NourEldinShobier" },
   "repository": "https://github.com/NourEldinShobier/deepseek-search",
