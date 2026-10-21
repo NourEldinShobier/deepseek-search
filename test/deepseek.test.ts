@@ -163,6 +163,12 @@ test("DeepSeek's escaped punctuation is unescaped, real backslashes in words are
   expect(unescapeMarkdown('\\# Node\\.js \\(v24\\) \\| LTS \\- C:\\Users')).toBe('# Node.js (v24) | LTS - C:\\Users');
 });
 
+test('long summaries are cut at 800 characters and say so', () => {
+  const out = formatResults([{ title: 'T', url: 'https://a.example', summary: 'y'.repeat(900) }], false);
+  expect(out).toContain(`${'y'.repeat(800)}… [summary cut; fetch the page for more]`);
+  expect(out).not.toContain('y'.repeat(801));
+});
+
 test('content is capped per result and says how to get the rest', () => {
   const out = formatResults([{ title: 'T', url: 'https://a.example', summary: 's', content: 'x'.repeat(4005) }], true);
   expect(out).toContain('[… 5 more characters; use fetch on this URL for the full page]');

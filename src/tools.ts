@@ -11,6 +11,8 @@ export interface Tool {
 }
 
 const PER_RESULT_CONTENT = 4000;
+/** DeepSeek documents ~700-character summaries but sometimes returns several thousand. */
+const SUMMARY_CHARS = 800;
 const FETCH_CHARS = 20_000;
 const MAX_EXTRA_QUERIES = 4;
 
@@ -28,7 +30,9 @@ export function formatResults(results: readonly Result[], withContent: boolean):
     ]
       .filter(Boolean)
       .join(' · ');
-    let s = `${i + 1}. [${r.title || r.url}](${r.url})${meta ? ` — ${meta}` : ''}\n   ${unescapeMarkdown(r.summary ?? '').replace(/\s+/g, ' ').trim()}`;
+    const summary = unescapeMarkdown(r.summary ?? '').replace(/\s+/g, ' ').trim();
+    const short = summary.length > SUMMARY_CHARS ? `${summary.slice(0, SUMMARY_CHARS)}… [summary cut; fetch the page for more]` : summary;
+    let s = `${i + 1}. [${r.title || r.url}](${r.url})${meta ? ` — ${meta}` : ''}\n   ${short}`;
     if (withContent && r.content) {
       const content = unescapeMarkdown(r.content);
       const cut = content.length > PER_RESULT_CONTENT;
